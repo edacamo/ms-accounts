@@ -14,7 +14,7 @@ public interface AccountService {
 
     Optional<Account> getCuentaById(Long id);
 
-    public Account updateCuenta(Long id, Account cuentaDetails);
+    public Account updateCuenta(Long id, AccountRegisterRequest cuentaDetails);
 
     public void deleteCuenta(Long id);
 }

@@ -102,6 +102,18 @@ public class GlobalExceptionHandler {
         }
     }
 
+    @ExceptionHandler(InsufficientFundsException.class)
+    public ResponseEntity<ResponseGeneric<Object>> handleInsufficientFundsException(InsufficientFundsException ex) {
+        log.error("Error de saldo insuficiente: {}", ex.getMessage());
+
+        ResponseGeneric<Object> response = ResponseGeneric.error(
+                HttpStatus.BAD_REQUEST.value(),
+                ResponseCode.INSUFFICIENT_FUNDS,
+                ex.getMessage()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseGeneric<Object> buildErrorResponse(Exception ex, HttpStatus status, ResponseCode responseCode) {
         String mensajeCausa = obtenerMensajeCausa(ex);
         String mensajeLimpio = mensajeCausa.isEmpty() ? "" : Helpers.cleanErrorMessage(mensajeCausa);

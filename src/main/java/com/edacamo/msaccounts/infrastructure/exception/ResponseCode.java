@@ -10,13 +10,14 @@ public enum ResponseCode {
     TIMEOUT_ERROR("TIMEOUT_ERROR_005", "Tiempo de espera agotado"),
     NOT_FOUND("NOT_FOUND_006", "El recurso solicitado no fue encontrado"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR_007", "Error interno del servidor"),
+    INSUFFICIENT_FUNDS("UNKNOWN_ERROR_008", "Saldo insuficiente para realizar la transacción."),
 
     // Códigos de éxito
     SUCCESS("SUCCESS_001", "Operación realizada con éxito"),
     DATA_CREATED("DATA_CREATED_002", "Datos creados correctamente"),
     DATA_UPDATED("DATA_UPDATED_003", "Datos actualizados correctamente"),
-
-    CONFLICT_ERROR("409", "Ya existe un registro con los datos proporcionados. Por favor, verifique e intente nuevamente.");
+    CONFLICT_ERROR("409", "Ya existe un registro con los datos proporcionados. Por favor, verifique e intente nuevamente."),
+    DATA_DELETE("DATA_DELETE_004", "Datos eliminados correctamente");
 
     private final String code;
     private final String description;

@@ -19,10 +19,14 @@ public class Movements {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //@Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime fecha;
 
-    @Column(name="tipo_movimiento")
+    @Column(
+            name="tipo_movimiento",
+            nullable = false,
+            length = 1
+    )
     private String tipoMovimiento;
 
     private BigDecimal valor;

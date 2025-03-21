@@ -6,6 +6,7 @@ import com.edacamo.msaccounts.domain.repositories.AccountRepository;
 import com.edacamo.msaccounts.domain.repositories.ClientSnapshotRepository;
 import com.edacamo.msaccounts.infrastructure.exception.ConflictException;
 import com.edacamo.msaccounts.interfaces.dto.AccountRegisterRequest;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -62,15 +63,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     @Transactional()
-    public Account updateCuenta(Long id, Account cuentaDetails) {
+    public Account updateCuenta(Long id, AccountRegisterRequest cuentaDetails) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new EmptyResultDataAccessException("Cuenta no encontrada", 1));
+
+        //Se obtiene datos del cliente snapshot
+        ClientSnapshot client = clientSnapshotRepository
+                .findByClienteId(cuentaDetails.getClienteId())
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
 
         account.setNumeroCuenta(cuentaDetails.getNumeroCuenta());
         account.setTipo(cuentaDetails.getTipo());
         account.setSaldoInicial(cuentaDetails.getSaldoInicial());
         account.setEstado(cuentaDetails.getEstado());
-        account.setClient(cuentaDetails.getClient());
+        account.setClient(client);
 
         return accountRepository.save(account);
     }
@@ -78,6 +84,21 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional()
     public void deleteCuenta(Long id) {
+        // Verificar si la cuenta existe antes de intentar eliminarla
+        Optional<Account> account = this.accountRepository.findById(id);
+        if (account.isPresent()) {
 
+            this.accountRepository.deleteById(id);
+
+            // Verificar si la eliminación fue exitosa
+            if (!this.accountRepository.existsById(id)) {
+                log.info("Cuenta con id {} eliminada exitosamente", id);
+            } else {
+                log.warn("No se pudo eliminar la cuenta con id {}", id);
+            }
+        } else {
+            log.warn("No se encontró la cuenta con id {}", id);
+            throw new EntityNotFoundException("Cuenta no encontrada con id: " + id);
+        }
     }
 }
